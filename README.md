@@ -16,3 +16,5 @@ disponível em http://laps.ufpa.br/zampolo/ensino/tcc.html
 [5] http://www.bytefish.de/blog/eigenfaces/
 
 [6] http://jmcspot.com/Eigenface/
+
+# Perdi
