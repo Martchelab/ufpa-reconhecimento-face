@@ -22,46 +22,36 @@ function [X y width height names] = read_images(path) %$ a principal função re
 			continue; 
 		end
    
-		added = 0;
+		added = 0; %% define a variável responsável pela incrementação do processo
 		names{n} = subject;
 		%% constrói a matriz de imagens e a classe dos vetores
 		for j=1:length(images)
 			filename = [path, filesep, subject, filesep, images{j}]; 
-
-			%% Octave crashes on reading non image files (uncomment this to be a bit more robust)
-			%extension = strsplit(images{j}, "."){end};
-			%if(~any(strcmpi(extension, {"bmp", "gif", "jpg", "jpeg", "png", "tiff"})))
-			%	continue;
-			%endif
-      
-			% Quite a pythonic way to handle failure.... May blow you up just like the above.
 			try
-				T = double(imread(filename));
+				T = double(imread(filename)); %% T recebe a imagem lida do arquivo
 			catch
-				lerr = lasterror;
-				fprintf(1,'Cannot read image %s', filename)
+				lerr = lasterror; %% caso não consiga ler a imagem
+				fprintf(1,'Nao foi possivel ler a imagem %s', filename)
 			end
 			
-			[height width channels] = size(T);
-      
-			% greyscale the image if we have 3 channels
-			if(channels == 3)
+			[height width channels] = size(T); %% recebe a altura, largura e quantos canais de cores a imagem tem
+     
+			if(channels == 3) %% caso a imagem seja RGB, é feita a conversão pra escala de cinza
 				T = (T(:,:,1) + T(:,:,2) + T(:,:,3)) / 3;
 			end
-      
-			%% finally try to append data
+     
 			try
-				%% Add image as a column vector:
+				%% Adiciona essa imagem como um vetor coluna
 				X = [X, reshape(T,width*height,1)];
 				y = [y, n];
 				added = added + 1;
 			catch
 				lerr = lasterror;
-				fprintf(1,'Image cannot be added to the Array. Wrong image size?\n')
+				fprintf(1,'A imagem nao pode ser adicionada ao array. Tamanho errado?\n')
 			end
 		end
-		% only increment class if images were actually added!
-		if ~(added == 0)
+		%% incrementa apenas caso tenha lido uma imagem
+		if ~(added != 0) 
 			n = n + 1;
 		end
 	end
